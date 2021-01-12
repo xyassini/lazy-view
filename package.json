@@ -1,0 +1,25 @@
+{
+  "name": "lazy-view",
+  "version": "0.0.1",
+  "description": "Lazy view easily allows to lazy load data with a request from another server - no javascript needed!",
+  "main": "lazy-view.js",
+  "scripts": {
+    "build": "npx babel src --out-dir lib",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yassine Zeriouh",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "babel-preset-minify": "^0.5.1",
+    "eslint": "^7.17.0"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1"
+  }
+}
