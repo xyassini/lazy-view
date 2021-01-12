@@ -8,5 +8,16 @@
     ],
     "minify"
   ],
+  "plugins": [
+    [
+      "transform-remove-console",
+      {
+        "exclude": [
+          "error",
+          "warn"
+        ]
+      }
+    ]
+  ],
   "comments": false
 }
