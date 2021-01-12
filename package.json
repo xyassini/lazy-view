@@ -1,6 +1,6 @@
 {
   "name": "lazy-view",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lazy view easily allows to lazy load data with a request from another server - no javascript needed!",
   "main": "lazy-view.js",
   "scripts": {
