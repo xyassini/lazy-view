@@ -1,5 +1,7 @@
-(function () {
+window.onload = function () {
   console.log('dom ready');
+
+  document.head.insertAdjacentHTML("beforeend", `<style>[lazy-placeholder]{display:none !important;}</style>`)
 
   const request = (url, type = 'GET', body = '') => {
     return new Promise((resolve, reject) => {
@@ -33,67 +35,73 @@
       }
     }
     return o;
-  }
-
-  const target = document.querySelector('body');
-
-  const callback = (mutationList, observer) => {
-    for (const mutation of mutationList) {
-      switch (mutation.type) {
-        case 'attributes':
-          return handleAttributesChange(mutation);
-      }
-    }
   };
 
-  const observer = new MutationObserver(callback);
-  observer.observe(target, {
-    attributes: true,
-    attributeFilter: ['lazy']
-  });
-  const handleAttributesChange = (mutation) => {
-    console.log('handleAttributesChange', mutation);
-  };
+  // const target = document.querySelector('body');
+
+  // const callback = (mutationList, observer) => {
+  //   for (const mutation of mutationList) {
+  //     switch (mutation.type) {
+  //       case 'attributes':
+  //         return handleAttributesChange(mutation);
+  //     }
+  //   }
+  // };
+
+  // const observer = new MutationObserver(callback);
+  // observer.observe(target, {
+  //   attributes: true,
+  //   attributeFilter: ['lazy']
+  // });
+  // const handleAttributesChange = (mutation) => {
+  //   console.log('handleAttributesChange', mutation);
+  // };
 
   const placeValues = (element, response) => {
     for (let i = 0; i < element.children.length; i++) {
       const node = element.children.item(i);
       console.log('node', node);
+
+      if (node.hasAttribute('lazy-placeholder-copy')) {
+        node.remove();
+      }
+
       if (node.childElementCount > 0) {
         placeValues(node, response);
       } else {
-        console.log('node before', node);
-        node.innerHTML = node.innerText.replace(new RegExp('{{(.*?)}}', 'gi'), (r) => {
+        node.outerHTML = node.outerHTML.replace(new RegExp('{{(.*?)}}', 'gi'), (r) => {
           r = r.replace(/{/g, '').replace(/}/g, '');
-          console.log('r', Object.byString(response, r));
           return Object.byString(response, r);
         });
-        console.log('node after', node);
+
+        // node.removeChild()
+        
+        // console.log('node children', node);
       }
     }
   };
 
+  const copyPlaceholder = (element) => {
+    const placeholder = document.querySelector('[lazy-placeholder]');
+    const clone = placeholder.cloneNode(true);
+    const newElement = element.appendChild(clone);
+    newElement.removeAttribute('lazy-placeholder');
+    newElement.setAttribute('lazy-placeholder-copy', '');
+    newElement.style.display = 'block';
+  };
+
   const initialAttributes = () => {
     const elements = document.querySelectorAll('[lazy]');
-
-    const placeholder = document.querySelector('[lazy-placeholder]');
-    placeholder.style.display = 'none';
-    const placeholderNode = placeholder.cloneNode(true);
-
     elements.forEach(element => {
-      // console.log('element', element)
-      const newElement = element.appendChild(placeholderNode);
-      newElement.style.display = 'block';
-      console.log('newElement', newElement);
-      // newElement.style = "position: absolute;top:0;right:0;bottom:0;left:0;z-index:10;" + newElement.style;
+      copyPlaceholder(element);
 
       const url = element.attributes.getNamedItem('lazy').value;
       request(url).then(response => {
-        console.log('response', response);
+        // console.log('response', response);
         placeValues(element, response);
       });
     });
   };
 
   initialAttributes();
-})();
+};
